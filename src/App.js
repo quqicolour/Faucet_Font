@@ -9,12 +9,7 @@ import {
   isAddress,
   zeroAddress,
 } from "viem";
-import {
-  createPublicClient,
-  createWalletClient,
-  custom,
-  http,
-} from "viem";
+import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { arbitrumSepolia } from "viem/chains";
 
 import FaucetABI from "./json/Faucet.json";
@@ -185,11 +180,7 @@ function App() {
       return false;
     }
 
-    const walletClient = createWalletClient({
-      chain: arbitrumSepolia,
-      transport: custom(window.ethereum),
-    });
-    if (!walletClient) {
+    if (!publicClient) {
       setError("请先连接钱包");
       return false;
     }
@@ -210,14 +201,13 @@ function App() {
       const decimals = isZeroAddress ? 18 : tokenDecimals;
       const amountIn = parseUnits(amount, decimals);
 
-      
-
-
+      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const walletClient = createWalletClient({
+        account,
         chain: arbitrumSepolia,
         transport: custom(window.ethereum),
       });
-      
+
       const hash = await walletClient.writeContract({
         address: faucetAddress,
         abi: FaucetABI.abi,
@@ -226,7 +216,7 @@ function App() {
         maxFeePerGas: parseGwei("50"),
         account: connectedAddress,
       });
-      
+
       setTxHash(hash);
       setTxType("mint");
       setSuccess("Mint成功！");
@@ -259,7 +249,9 @@ function App() {
       const decimals = isZeroAddress ? 18 : tokenDecimals;
       const amountInWei = parseUnits(amount, decimals);
 
+      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const walletClient = createWalletClient({
+        account,
         chain: arbitrumSepolia,
         transport: custom(window.ethereum),
       });
@@ -270,7 +262,7 @@ function App() {
         args: [tokenAddress, receiverAddress, amountInWei],
         account: connectedAddress,
       });
-      
+
       setTxHash(hash);
       setTxType("claim");
       setSuccess("Claim成功！");
