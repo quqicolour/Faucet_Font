@@ -37,12 +37,7 @@ const getExplorerUrl = (hash) => {
 
 const publicClient = createPublicClient({
   chain: arbitrumSepolia,
-  transport: http("https://arbitrum-sepolia-rpc.publicnode.com"),
-});
-
-const walletClient = createWalletClient({
-  chain: arbitrumSepolia,
-  transport: custom(window.ethereum),
+  transport: http(),
 });
 
 function App() {
@@ -189,6 +184,11 @@ function App() {
       setError("请输入有效的数量");
       return false;
     }
+
+    const walletClient = createWalletClient({
+      chain: arbitrumSepolia,
+      transport: custom(window.ethereum),
+    });
     if (!walletClient) {
       setError("请先连接钱包");
       return false;
@@ -209,6 +209,14 @@ function App() {
       // 使用正确的decimals：ETH固定18位，ERC20使用代币的decimals
       const decimals = isZeroAddress ? 18 : tokenDecimals;
       const amountIn = parseUnits(amount, decimals);
+
+      
+
+
+      const walletClient = createWalletClient({
+        chain: arbitrumSepolia,
+        transport: custom(window.ethereum),
+      });
       
       const hash = await walletClient.writeContract({
         address: faucetAddress,
@@ -250,6 +258,11 @@ function App() {
       // 使用正确的decimals：ETH固定18位，ERC20使用代币的decimals
       const decimals = isZeroAddress ? 18 : tokenDecimals;
       const amountInWei = parseUnits(amount, decimals);
+
+      const walletClient = createWalletClient({
+        chain: arbitrumSepolia,
+        transport: custom(window.ethereum),
+      });
       const hash = await walletClient.writeContract({
         address: faucetAddress,
         abi: FaucetABI.abi,
