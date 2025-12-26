@@ -18,7 +18,7 @@ import {
 import { arbitrumSepolia } from "viem/chains";
 
 import FaucetABI from "./json/Faucet.json";
-import ERC20ABI from "./json/ERC20ABI.json";
+import ERC20ABI from "./json/ERC20.json";
 
 const faucetAddress = "0x8A3832136896229C281Dd0760FEF8E4CE4718587";
 
