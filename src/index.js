@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-//raiibowKit
+// RainbowKit
 import {
   getDefaultConfig,
   RainbowKitProvider,
@@ -12,7 +12,9 @@ import {
 import { WagmiProvider } from 'wagmi';
 import { http } from 'wagmi';
 import {
-  arbitrumSepolia
+  arbitrumSepolia,
+  baseSepolia,
+  avalancheFuji,
 } from 'wagmi/chains';
 import {
   QueryClientProvider,
@@ -21,17 +23,21 @@ import {
 import { okxWallet, zerionWallet, rabbyWallet } from '@rainbow-me/rainbowkit/wallets';
 
 const config = getDefaultConfig({
-  appName: 'Faucet',
+  appName: 'Multi-Chain Faucet',
   wallets: [
     {
       groupName: 'Preferred',
       wallets: [okxWallet, zerionWallet, rabbyWallet],
     },
   ],
-  projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID,
-  chains: [arbitrumSepolia],
-  transports: {},
-  ssr: true, // If your dApp uses server side rendering (SSR)
+  projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID || 'demo',
+  chains: [arbitrumSepolia, baseSepolia, avalancheFuji],
+  transports: {
+    [arbitrumSepolia.id]: http(),
+    [baseSepolia.id]: http(),
+    [avalancheFuji.id]: http(),
+  },
+  ssr: true,
 });
 
 const queryClient = new QueryClient();
@@ -41,7 +47,7 @@ root.render(
   <React.StrictMode>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider coolMode = {true}>
+        <RainbowKitProvider coolMode={true}>
           <App />
         </RainbowKitProvider>
       </QueryClientProvider>
@@ -49,7 +55,4 @@ root.render(
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
